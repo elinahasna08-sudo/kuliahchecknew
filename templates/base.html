@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}KuliahCheck{% endblock %}</title>
+  <meta name="description" content="Cek kesiapan sebelum berangkat kuliah.">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="{{ url_for('index') }}">KuliahCheck</a>
+    <nav aria-label="Menu utama">
+      <a href="{{ url_for('index') }}"{% if active == 'hari-ini' %} aria-current="page"{% endif %}>Hari ini</a>
+      <a href="{{ url_for('riwayat') }}"{% if active == 'riwayat' %} aria-current="page"{% endif %}>Riwayat</a>
+    </nav>
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+  <footer class="foot">Dibuat dengan Flask. Data tersimpan di file JSON, tanpa database.</footer>
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</body>
+</html>

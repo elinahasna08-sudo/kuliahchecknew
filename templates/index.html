@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Hari ini - KuliahCheck{% endblock %}
+{% block content %}
+<p class="date">{{ tanggal }}</p>
+
+<section class="hero" id="hero" data-level="{{ s.level }}" aria-live="polite">
+  <svg class="bag" viewBox="0 0 120 140" role="img" aria-label="Tas ransel yang terisi sesuai persentase kesiapan">
+    <defs>
+      <clipPath id="bag-clip"><path d="M28 40Q28 28 40 28H80Q92 28 92 40V118Q92 128 82 128H38Q28 128 28 118Z"/></clipPath>
+    </defs>
+    <path class="bag-handle" d="M46 28C46 8 74 8 74 28"/>
+    <path class="bag-body" d="M28 40Q28 28 40 28H80Q92 28 92 40V118Q92 128 82 128H38Q28 128 28 118Z"/>
+    <g clip-path="url(#bag-clip)">
+      <rect id="bag-fill" class="bag-fill" x="28" y="28" width="64" height="100" style="transform: translateY({{ 100 - s.percent }}px)"/>
+    </g>
+    <path class="bag-pocket" d="M40 86H80V116Q80 120 76 120H44Q40 120 40 116Z"/>
+    <path class="bag-outline" d="M28 40Q28 28 40 28H80Q92 28 92 40V118Q92 128 82 128H38Q28 128 28 118Z"/>
+  </svg>
+  <div class="hero-text">
+    <p class="hero-label">Kesiapan kamu</p>
+    <p class="hero-pct"><span id="pct">{{ s.percent }}</span>%</p>
+    <p class="hero-msg" id="msg">{{ s.message }}</p>
+  </div>
+</section>
+
+{% if s.rows %}
+<ul class="items" id="items">
+  {% for it in s.rows %}
+  <li>
+    <button type="button" class="item{% if it.checked %} is-on{% endif %}" data-id="{{ it.id }}" aria-pressed="{{ 'true' if it.checked else 'false' }}">
+      <span class="item-emoji" aria-hidden="true">{{ it.emoji }}</span>
+      <span class="item-name">{{ it.name }}</span>
+      <span class="item-box" aria-hidden="true"></span>
+    </button>
+  </li>
+  {% endfor %}
+</ul>
+<div class="actions"><button type="button" class="btn" id="reset">Kosongkan centang</button></div>
+{% else %}
+<p class="empty">Belum ada barang untuk hari ini. Tambahkan barang pertamamu di bawah.</p>
+{% endif %}
+
+<details class="manage">
+  <summary>Kelola barang</summary>
+
+  <form id="add-form" class="add-form" autocomplete="off">
+    <div class="row">
+      <label class="field grow">Nama barang
+        <input type="text" name="name" maxlength="30" placeholder="Jas lab" required>
+      </label>
+      <label class="field emoji">Ikon
+        <input type="text" name="emoji" maxlength="8" placeholder="🥼">
+      </label>
+    </div>
+    <fieldset class="days">
+      <legend>Hari (kosongkan jika setiap hari)</legend>
+      {% for h in hari_singkat %}
+      <label class="chip"><input type="checkbox" name="days" value="{{ loop.index0 }}"><span>{{ h }}</span></label>
+      {% endfor %}
+    </fieldset>
+    <p class="form-error" id="form-error" role="alert"></p>
+    <button type="submit" class="btn btn-primary">Tambah barang</button>
+  </form>
+
+  <ul class="manage-list">
+    {% for it in items %}
+    <li>
+      <span class="item-emoji" aria-hidden="true">{{ it.emoji }}</span>
+      <span class="manage-name">{{ it.name }}
+        <small>{% if it.days %}{% for d in it.days %}{{ hari_singkat[d] }}{% if not loop.last %}, {% endif %}{% endfor %}{% else %}Setiap hari{% endif %}</small>
+      </span>
+      <button type="button" class="btn btn-danger" data-delete="{{ it.id }}" aria-label="Hapus {{ it.name }}">Hapus</button>
+    </li>
+    {% endfor %}
+  </ul>
+</details>
+{% endblock %}
